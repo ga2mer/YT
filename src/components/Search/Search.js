@@ -93,8 +93,18 @@ export default class Search extends Component {
                     <Text>Пока без плейлистов</Text>
                 </View>
             );
+        } else if (rowData.type == 'message') {
+            return (
+                <View>
+                    <Text>{rowData.text}</Text>
+                </View>
+            );
         }
-        return <View></View>;
+        return (
+            <View>
+                <Text>Какая-то неподдерживаемая штуковина</Text>
+            </View>
+        )
     }
     renderProgressBar = () => {
         if (this.props.searchStore.endReached) {
@@ -109,7 +119,7 @@ export default class Search extends Component {
                 flex: 1,
                 backgroundColor: 'white'
             }}>
-                <ListView onEndReached={searchStore.handleEnd} scrollRenderAheadDistance={1000} renderFooter={this.renderProgressBar} enableEmptySections initialListSize={1} dataSource={searchStore.list} renderRow={this.renderRow}/>
+                {searchStore.list && <ListView keyboardShouldPersistTaps removeClippedSubviews={false} onEndReached={searchStore.handleEnd} scrollRenderAheadDistance={1000} renderFooter={this.renderProgressBar} enableEmptySections initialListSize={1} dataSource={searchStore.list} renderRow={this.renderRow}/>}
             </View>
         );
     }

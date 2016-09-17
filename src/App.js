@@ -69,6 +69,14 @@ export default class App extends Component {
                             toolbarProps.navIconName = 'arrow-back';
                             toolbarProps.onIconClicked = navigator.pop;
                             toolbarProps.children = React.createElement(SearchInput, {store: route.passProps.store});
+                            toolbarProps.actions = [
+                                {
+                                    title: 'Filter',
+                                    iconName: 'filter-list',
+                                    iconSize: 26,
+                                    show: 'always'
+                                }
+                            ];
                             component = <Search searchStore={route.passProps.store}/>;
                             break;
                         case 'channel':

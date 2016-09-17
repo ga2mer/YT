@@ -3,16 +3,18 @@ import {ListView} from 'react-native';
 import RNFetchBlob from 'react-native-fetch-blob';
 import userStore from './UserStore';
 import {makeJSON} from '../lib/utils';
+import get from 'lodash/get';
 const ds = new ListView.DataSource({
     rowHasChanged: (r1, r2) => r1 !== r2
 });
 export default class SearchStore {
     @observable text = '';
-    listData = [];
-    @observable list = ds.cloneWithRows([]);
+    listData = null;
+    @observable list = null;
     itct = "";
     ctoken = "";
     @observable loading = true;
+    @observable endReached = false;
     handleChange = (text) => {
         this.text = text;
     }
@@ -24,8 +26,10 @@ export default class SearchStore {
             return this.parseVideo(item);
         } else if (type == 'compact_playlist') {
             return this.parsePlaylist(item);
+        } else if (type == 'message') {
+            return {type: 'message', text: item.text.runs[0].text};
         } else {
-            return {};
+            return {type: 'unsupported'};
         }
     }
     parseChannel = (channel) => {
@@ -34,8 +38,8 @@ export default class SearchStore {
             username: channel.endpoint.url.replace('/user/', ''),
             title: channel.title.runs[0].text,
             avatar: channel.thumbnail_info.url,
-            count_videos: channel.video_count.runs[0].text,
-            count_subs: channel.subscriber_count.runs[0].text
+            count_videos: get(channel, 'video_count.runs[0].text', ''),
+            count_subs: get(channel, 'subscriber_count.runs[0].text') || ''
         };
     }
     parseVideo = (video) => {
@@ -54,21 +58,27 @@ export default class SearchStore {
         return {type: 'playlist'};
     }
     handleSubmit = () => {
+        this.loading = true;
+        this.endReached = false;
         var cookie = 'VISITOR_INFO1_LIVE=WgjaHAcmdsg;'
         if (userStore.isAuth) {
             cookie += `SID=${userStore.SID}; SSID=${userStore.SSID}`
         }
         var url = `https://m.youtube.com/results?ajax=1&layout=mobile&q=${this.text}&sm=3&tsp=1&utcoffset=180`;
-        this.loading = true;
         RNFetchBlob.fetch('GET', url, {
             'user-agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.76 Mobile Safari/537.36',
             cookie
         }).then((res) => res.text()).then((response) => {
             var obj = makeJSON(response);
-            var {click_tracking_params: itct, continuation: ctoken} = obj.content.search_results.continuations[0];
+            var conts = obj.content.search_results.continuations;
+            if (conts[0]) {
+                var {click_tracking_params: itct, continuation: ctoken} = conts[0];
+                this.itct = itct;
+                this.ctoken = ctoken;
+            } else {
+                this.endReached = true;
+            }
             var videos = obj.content.search_results.contents.map(this.parse);
-            this.itct = itct;
-            this.ctoken = ctoken;
             this.loading = false;
             this.listData = videos;
             this.list = ds.cloneWithRows(videos);
@@ -77,7 +87,7 @@ export default class SearchStore {
         });
     }
     handleEnd = () => {
-        if (!this.loading) {
+        if (!this.loading && !this.endReached) {
             var cookie = 'VISITOR_INFO1_LIVE=WgjaHAcmdsg;'
             if (userStore.isAuth) {
                 cookie += `SID=${userStore.SID}; SSID=${userStore.SSID}`
@@ -89,10 +99,15 @@ export default class SearchStore {
                 cookie
             }).then((res) => res.text()).then((response) => {
                 var obj = makeJSON(response);
-                var {click_tracking_params: itct, continuation: ctoken} = obj.content.continuation_contents.continuations[1];
+                var conts = obj.content.continuation_contents.continuations;
+                if (conts[1]) {
+                    var {click_tracking_params: itct, continuation: ctoken} = conts[1];
+                    this.itct = itct;
+                    this.ctoken = ctoken;
+                } else {
+                    this.endReached = true;
+                }
                 var videos = obj.content.continuation_contents.contents.map(this.parse);
-                this.itct = itct;
-                this.ctoken = ctoken;
                 this.loading = false;
                 this.listData = this.listData.concat(videos);
                 this.list = ds.cloneWithRows(this.listData);
