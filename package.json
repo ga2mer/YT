@@ -1,0 +1,33 @@
+{
+  "name": "YT",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start"
+  },
+  "dependencies": {
+    "axios": "^0.14.0",
+    "cookie": "^0.3.1",
+    "lodash": "^4.15.0",
+    "mobx": "^2.5.1",
+    "mobx-react": "^3.5.6",
+    "query-string": "^4.2.3",
+    "react": "^15.3.1",
+    "react-addons-shallow-compare": "^15.3.1",
+    "react-native": "^0.33.0",
+    "react-native-android-seekbar": "github:ga2mer/react-native-android-seekbar#temp",
+    "react-native-android-tablayout": "git+https://github.com/AlbertBrand/react-native-android-tablayout.git",
+    "react-native-bottomdialog": "0.0.3",
+    "react-native-cookies": "^2.0.0",
+    "react-native-fetch-blob": "^0.9.4",
+    "react-native-keep-screen-on": "^1.0.6",
+    "react-native-linear-gradient": "^1.5.12",
+    "react-native-material-kit": "^0.3.2",
+    "react-native-orientation": "github:curse/react-native-orientation#1.17.0-custom",
+    "react-native-vector-icons": "^2.1.0",
+    "react-native-video": "^0.9.0"
+  },
+  "devDependencies": {
+    "babel-plugin-transform-decorators-legacy": "^1.3.4"
+  }
+}
