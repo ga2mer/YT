@@ -80,7 +80,7 @@ export default class VideoComponent extends Component {
                     </TouchableWithoutFeedback>
                     {!videoStore.mini && <Controls/>}
                 </View>
-                <Text>{videoStore.state}</Text>
+                {/* <Text>{videoStore.state}</Text> */}
                 {!videoStore.mini && !videoStore.full && <ScrollView>
                     <Info/>
                 </ScrollView>}
