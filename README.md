@@ -10,9 +10,10 @@ YouTube app for android written with React-Native
 - [ ] subs list in subs tab
 - [ ] profile tab
 - [ ] playlists
+- [ ] autosuggest in search
 - [ ] filter in search
 - [ ] playlists in search
-- [ ] author on profile
+- [ ] author in video
 - [ ] related video
 - [ ] comments
 - [ ] main tab in channel tab
@@ -27,3 +28,6 @@ YouTube app for android written with React-Native
 - [ ] animations
 - [ ] support 480p, 1080p-4320p
 - [ ] support streams
+- [ ] annotations
+- [ ] CC
+- [ ] 3D/Cardboard

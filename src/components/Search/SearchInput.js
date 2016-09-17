@@ -8,9 +8,11 @@ export default class SearchInput extends Component {
         var {store} = this.props;
         return (
             <View style={{
-                flex: 1,
+                flex: 1
             }}>
-                <TextInput autoFocus={true} placeholder='Enter description of entry...' onChangeText={store.handleChange} onSubmitEditing={store.handleSubmit}/>
+                <TextInput style={{
+                    fontSize: 18
+                }} autoFocus={true} blurOnSubmit={true} placeholder='Enter name of video or channel' underlineColorAndroid={'transparent'} onChangeText={store.handleChange} onSubmitEditing={store.handleSubmit}/>
             </View>
         );
     }

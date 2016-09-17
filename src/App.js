@@ -64,6 +64,8 @@ export default class App extends Component {
                             component = <Auth/>;
                             break;
                         case 'search':
+                            toolbarProps.backgroundColor = '#d3d3d3';
+                            toolbarProps.iconColor = 'black';
                             toolbarProps.navIconName = 'arrow-back';
                             toolbarProps.onIconClicked = navigator.pop;
                             toolbarProps.children = React.createElement(SearchInput, {store: route.passProps.store});
