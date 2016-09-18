@@ -10,7 +10,7 @@ YouTube app for android written with React-Native
 - [ ] subs list in subs tab
 - [ ] profile tab
 - [ ] playlists
-- [ ] autosuggest in search
+- [x] autosuggest in search
 - [ ] filter in search
 - [ ] playlists in search
 - [ ] author in video

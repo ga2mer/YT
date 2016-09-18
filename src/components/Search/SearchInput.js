@@ -12,7 +12,7 @@ export default class SearchInput extends Component {
             }}>
                 <TextInput style={{
                     fontSize: 18
-                }} autoFocus={true} blurOnSubmit={true} placeholder='Enter name of video or channel' underlineColorAndroid={'transparent'} onChangeText={store.handleChange} onSubmitEditing={store.handleSubmit}/>
+                }} value={store.text} autoFocus={true} blurOnSubmit={true} placeholder='Enter name of video or channel' underlineColorAndroid={'transparent'} onFocus={store.handleFocus} onChangeText={store.handleChange} onSubmitEditing={store.handleSubmit}/>
             </View>
         );
     }

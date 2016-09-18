@@ -82,7 +82,7 @@ export default class Controls extends Component {
                             }}><CurrentTime/><TotalTime/></View>
                             <View style={{
                                 paddingRight: 5
-                            }}><Icon name={'crop-free'} color={'white'} size={26}/></View>
+                            }}><Icon name={'fullscreen'} color={'white'} size={26}/></View>
                         </View>
                         <View><S/></View>
                     </LinearGradient>

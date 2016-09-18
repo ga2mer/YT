@@ -1,5 +1,5 @@
-import {observable} from 'mobx';
-import {ListView} from 'react-native';
+import {observable, action, autorun} from 'mobx';
+import {ListView, BackAndroid} from 'react-native';
 import RNFetchBlob from 'react-native-fetch-blob';
 import userStore from './UserStore';
 import {makeJSON} from '../lib/utils';
@@ -11,12 +11,49 @@ export default class SearchStore {
     @observable text = '';
     listData = null;
     @observable list = null;
+    @observable suggestions = [];
+    @observable showSuggest = true;
     itct = "";
     ctoken = "";
     @observable loading = true;
     @observable endReached = false;
-    handleChange = (text) => {
+    constructor() {
+        autorun(() => {
+            if (this.showSuggest) {
+                BackAndroid.addEventListener('hardwareBackPress', this.backListener);
+            } else {
+                BackAndroid.removeEventListener('hardwareBackPress', this.backListener);
+            }
+        });
+    }
+    backListener = () => {
+        this.showSuggest = false;
+        return true;
+    }
+    handleFocus = () => {}
+    handleSuggest = (text) => {
         this.text = text;
+    }
+    handleSearchSuggest = (text) => {
+        this.text = text;
+        this.handleSubmit();
+    }
+    @action
+    handleChange = (text) => {
+        if (!this.showSuggest) {
+            this.showSuggest = true;
+        }
+        this.text = text;
+        var url = `https://clients1.google.com/complete/search?client=youtube&hl=ru&gs_rn=64&gs_ri=youtube&ds=yt&cp=4&gs_id=j&q=${text}&callback=q;`
+        RNFetchBlob.fetch('GET', url, {'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.76 Mobile Safari/537.36'}).then((res) => res.text()).then((response) => {
+            var [,
+                regex] = /\((\[.*\])\)/.exec(response);
+            var arr = JSON.parse(regex);
+            var result = Object.values(arr[1]).map((item) => item[0]);
+            this.suggestions = result;
+        }).catch(function(error) {
+            console.log('suggests', error);
+        });
     }
     parse = (item) => {
         var type = item.item_type;
@@ -57,7 +94,9 @@ export default class SearchStore {
     parsePlaylist = (playlist) => {
         return {type: 'playlist'};
     }
+    @action
     handleSubmit = () => {
+        this.showSuggest = false;
         this.loading = true;
         this.endReached = false;
         var cookie = 'VISITOR_INFO1_LIVE=WgjaHAcmdsg;'

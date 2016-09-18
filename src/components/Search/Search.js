@@ -8,11 +8,13 @@ import {
     ActivityIndicator,
     ListView,
     Image,
-    TouchableNativeFeedback
+    TouchableNativeFeedback,
+    ScrollView
 } from 'react-native';
 import videoStore from '../../stores/VideoStore';
 import {observer, inject} from 'mobx-react/native';
 import ChannelStore from '../../stores/ChannelStore';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 @inject('navigator')
 @observer
 export default class Search extends Component {
@@ -120,8 +122,52 @@ export default class Search extends Component {
                 backgroundColor: 'white'
             }}>
                 {searchStore.list && <ListView keyboardShouldPersistTaps removeClippedSubviews={false} onEndReached={searchStore.handleEnd} scrollRenderAheadDistance={1000} renderFooter={this.renderProgressBar} enableEmptySections initialListSize={1} dataSource={searchStore.list} renderRow={this.renderRow}/>}
+                {searchStore.suggestions.length > 0 && searchStore.showSuggest && <Suggestions searchStore={searchStore}/>}
             </View>
         );
+    }
+}
+@observer
+class Suggestions extends Component {
+    render() {
+        const {searchStore} = this.props;
+        return (
+            <ScrollView keyboardShouldPersistTaps style={{
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0,
+                backgroundColor: 'white'
+            }}>
+                {searchStore.suggestions.map((suggestion) => {
+                    return (
+                        <View key={suggestion} style={{
+                            flex: 1,
+                            padding: 15,
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'space-between'
+                        }}>
+                            <TouchableNativeFeedback onPress={() => searchStore.handleSearchSuggest(suggestion)}>
+                                <View style={{
+                                    flexDirection: 'row',
+                                    alignItems: 'center'
+                                }}>
+                                    <Icon name={'search'} size={24}/>
+                                    <Text style={{
+                                        marginLeft: 24
+                                    }}>{suggestion}</Text>
+                                </View>
+                            </TouchableNativeFeedback>
+                            <TouchableNativeFeedback onPress={() => searchStore.handleSuggest(suggestion)}>
+                                <View><Icon name={'add'} size={24}/></View>
+                            </TouchableNativeFeedback>
+                        </View>
+                    );
+                })}
+            </ScrollView>
+        )
     }
 }
 const styles = StyleSheet.create({
