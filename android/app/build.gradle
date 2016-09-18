@@ -130,6 +130,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-dropdown-android')
     compile project(':react-native-cookies')
     compile project(':react-native-bottomdialog')
     compile project(':react-native-keep-screen-on')

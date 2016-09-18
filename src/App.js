@@ -77,6 +77,9 @@ export default class App extends Component {
                                     show: 'always'
                                 }
                             ];
+                            toolbarProps.onActionSelected = () => {
+                                route.passProps.store.handleOpenFilter();
+                            }
                             component = <Search searchStore={route.passProps.store}/>;
                             break;
                         case 'channel':

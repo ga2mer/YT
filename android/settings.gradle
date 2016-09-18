@@ -1,6 +1,8 @@
 rootProject.name = 'YT'
 
 include ':app'
+include ':react-native-dropdown-android'
+project(':react-native-dropdown-android').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-dropdown-android/android')
 include ':react-native-cookies'
 project(':react-native-cookies').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-cookies/android')
 include ':react-native-bottomdialog'

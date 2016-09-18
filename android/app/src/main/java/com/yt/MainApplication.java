@@ -5,6 +5,7 @@ import android.util.Log;
 import android.support.annotation.NonNull;
 
 import com.facebook.react.ReactApplication;
+import com.chymtt.reactnativedropdown.DropdownPackage;
 import com.psykar.cookiemanager.CookieManagerPackage;
 import com.ga2mer.bottomdialog.RNBottomDialogPackage;
 import com.gijoehosaphat.keepscreenon.KeepScreenOnPackage;
@@ -42,6 +43,7 @@ public class MainApplication extends Application implements ReactApplication {
         protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
                 new MainReactPackage(),
+            new DropdownPackage(),
                 new CookieManagerPackage(),
                 new RNBottomDialogPackage(),
                 new KeepScreenOnPackage(),

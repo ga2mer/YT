@@ -15,6 +15,9 @@ import videoStore from '../../stores/VideoStore';
 import {observer, inject} from 'mobx-react/native';
 import ChannelStore from '../../stores/ChannelStore';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import Modal from 'react-native-modalbox';
+import Dropdown from 'react-native-dropdown-android';
+import {MKButton} from 'react-native-material-kit';
 @inject('navigator')
 @observer
 export default class Search extends Component {
@@ -123,7 +126,57 @@ export default class Search extends Component {
             }}>
                 {searchStore.list && <ListView keyboardShouldPersistTaps removeClippedSubviews={false} onEndReached={searchStore.handleEnd} scrollRenderAheadDistance={1000} renderFooter={this.renderProgressBar} enableEmptySections initialListSize={1} dataSource={searchStore.list} renderRow={this.renderRow}/>}
                 {searchStore.suggestions.length > 0 && searchStore.showSuggest && <Suggestions searchStore={searchStore}/>}
+                {searchStore.filterOpened && <M searchStore={searchStore}/>}
             </View>
+        );
+    }
+}
+@observer
+class M extends Component {
+    state = {
+        type: 0,
+        time: 0
+    }
+    componentDidMount() {
+        const {searchStore} = this.props;
+        this.setState({type: searchStore.type, time: searchStore.time});
+    }
+    render() {
+        const {searchStore} = this.props;
+        const ApplyButton = MKButton.flatButton().withText('Apply').withOnPress(() => {
+            searchStore.handleFilter(this.state.type, this.state.time);
+        }).build();
+        const CancelButton = MKButton.flatButton().withText('Cancel').withOnPress(() => {
+            searchStore.handleCloseFilter();
+        }).build();
+        return (
+            <Modal isOpen={searchStore.filterOpened} onClosed={searchStore.handleCloseFilter} style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: 300,
+                width: 300
+            }} position={"center"}>
+                <Text style={styles.text}>Тип контента:</Text>
+                <Dropdown style={{
+                    height: 20,
+                    width: 200
+                }} values={['Все', 'Каналы']} selected={this.state.type} onChange={(data) => {
+                    this.setState({type: data.selected});
+                }}/>
+                <Text style={styles.text}>Время добавления:</Text>
+                <Dropdown style={{
+                    height: 20,
+                    width: 200
+                }} values={['За всё время', 'Сегодня', 'На этой неделе', 'В этом месяце']} selected={this.state.time} onChange={(data) => {
+                    this.setState({time: data.selected});
+                }}/>
+                <View style={{
+                    flexDirection: 'row'
+                }}>
+                    <CancelButton/>
+                    <ApplyButton/>
+                </View>
+            </Modal>
         );
     }
 }

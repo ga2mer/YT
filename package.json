@@ -19,10 +19,12 @@
     "react-native-android-tablayout": "git+https://github.com/AlbertBrand/react-native-android-tablayout.git",
     "react-native-bottomdialog": "0.0.3",
     "react-native-cookies": "^2.0.0",
+    "react-native-dropdown-android": "git+https://github.com/ga2mer/ReactNativeDropdownAndroid.git",
     "react-native-fetch-blob": "^0.9.4",
     "react-native-keep-screen-on": "^1.0.6",
     "react-native-linear-gradient": "^1.5.12",
     "react-native-material-kit": "^0.3.2",
+    "react-native-modalbox": "^1.3.7",
     "react-native-orientation": "github:curse/react-native-orientation#1.17.0-custom",
     "react-native-vector-icons": "^2.1.0",
     "react-native-video": "^0.9.0"

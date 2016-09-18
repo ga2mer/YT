@@ -17,6 +17,9 @@ export default class SearchStore {
     ctoken = "";
     @observable loading = true;
     @observable endReached = false;
+    @observable filterOpened = false;
+    type = 0;
+    time = 0;
     constructor() {
         autorun(() => {
             if (this.showSuggest) {
@@ -25,6 +28,20 @@ export default class SearchStore {
                 BackAndroid.removeEventListener('hardwareBackPress', this.backListener);
             }
         });
+    }
+    handleFilter = (type, time) => {
+        this.filterOpened = false;
+        this.type = type;
+        this.time = time;
+        this.handleSubmit(false);
+    }
+    handleOpenFilter = () => {
+        if (!this.showSuggest) {
+            this.filterOpened = true;
+        }
+    }
+    handleCloseFilter = () => {
+        this.filterOpened = false;
     }
     backListener = () => {
         this.showSuggest = false;
@@ -94,8 +111,32 @@ export default class SearchStore {
     parsePlaylist = (playlist) => {
         return {type: 'playlist'};
     }
+    convertType = () => {
+        switch (this.type) {
+          case 1:
+            return 'search_users';
+          default:
+            return '';
+        }
+    }
+    convertTime = () => {
+        switch (this.time) {
+          case 1:
+            return 'd';
+          case 2:
+            return 'w';
+          case 3:
+            return 'm';
+          default:
+            return '';
+        }
+    }
     @action
-    handleSubmit = () => {
+    handleSubmit = (resetFilter = true) => {
+        if (resetFilter) {
+            this.type = 0;
+            this.time = 0;
+        }
         this.showSuggest = false;
         this.loading = true;
         this.endReached = false;
@@ -103,7 +144,7 @@ export default class SearchStore {
         if (userStore.isAuth) {
             cookie += `SID=${userStore.SID}; SSID=${userStore.SSID}`
         }
-        var url = `https://m.youtube.com/results?ajax=1&layout=mobile&q=${this.text}&sm=3&tsp=1&utcoffset=180`;
+        var url = `https://m.youtube.com/results?ajax=1&layout=mobile&q=${this.text}&search_type=${this.convertType()}&uploaded=${this.convertTime()}&sm=3&tsp=1&utcoffset=180`;
         RNFetchBlob.fetch('GET', url, {
             'user-agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.76 Mobile Safari/537.36',
             cookie
